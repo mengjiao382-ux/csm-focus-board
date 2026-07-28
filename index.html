@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="聚合商机、交付、绩效和日常事项的 CSM 每日待办集合看板">
+  <title>聚焦 · CSM 待办集合看板</title>
+  <style>
+    :root{--ink:#20263a;--muted:#8991a3;--line:#e8eaf0;--purple:#6257e7;--purple-soft:#efedff;--page:#f7f8fb;--green:#0d9f78;--orange:#e58a26}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--page);color:var(--ink);font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .shell{min-height:100vh;display:flex}.sidebar{position:fixed;inset:0 auto 0 0;width:228px;background:#fff;border-right:1px solid var(--line);padding:26px 18px 20px;display:flex;flex-direction:column;z-index:10}
+    .brand{display:flex;align-items:center;gap:11px;padding:0 9px;font-size:20px;font-weight:800;letter-spacing:.08em}.mark{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:linear-gradient(145deg,#7b70f1,#5145d0);color:#fff;box-shadow:0 7px 15px #6257e737}
+    nav{margin-top:27px}.nav,.nav-btn{width:100%;height:42px;display:flex;align-items:center;gap:11px;border:0;background:none;color:#626b80;border-radius:9px;padding:0 12px;text-decoration:none;font-size:14px;text-align:left;margin-bottom:3px}.nav.active{color:var(--purple);background:var(--purple-soft);font-weight:700}.nav .badge{margin-left:auto;color:#fff;background:var(--purple);border-radius:12px;padding:2px 7px;font-size:11px}.nav-btn span:last-child{margin-left:auto;color:#a1a7b5;font-size:12px}.label{margin:23px 11px 9px;color:#acb1bd;font-size:10px;text-transform:uppercase;letter-spacing:.12em}
+    .user{margin-top:auto;border-top:1px solid var(--line);padding:20px 7px 0;display:flex;align-items:center;gap:10px}.avatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#e9e6ff;color:#5c51d9;font-weight:800;font-size:13px}.user div:nth-child(2){display:flex;flex-direction:column;gap:3px;font-size:12px}.user small{color:#969dad}
+    .content{width:calc(100% - 228px);margin-left:228px}.topbar{position:sticky;top:0;z-index:8;height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px}.crumb{display:flex;gap:10px;font-size:13px}.crumb span{color:#a0a6b5}.actions{display:flex;align-items:center;gap:11px}.search{width:215px;height:36px;border:1px solid #e2e5ec;background:#fafbfc;border-radius:9px;padding:0 11px;display:flex;align-items:center;gap:7px}.search input{border:0;outline:0;background:transparent;width:100%;font-size:12px}.primary{border:0;border-radius:9px;background:var(--purple);color:#fff;font-weight:700;padding:10px 16px;box-shadow:0 5px 13px #6257e72c}.mobile{display:none;border:0;background:none;font-size:18px}
+    main{max-width:1420px;margin:auto;padding:34px 36px 46px}.welcome{display:flex;justify-content:space-between;align-items:end;margin-bottom:25px}.eyebrow{color:#9ca3b3;font-size:12px;margin:0 0 8px}.welcome h1{font-size:26px;margin:0 0 8px}.welcome p:last-child{margin:0;color:#858da0;font-size:13px}.welcome em{color:#df5b62;font-style:normal;font-weight:700}.score{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 15px 9px 9px}.ring{width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--purple) 68%,#e8e8f5 0);display:grid;place-items:center;position:relative}.ring:after{content:"";position:absolute;inset:5px;background:#fff;border-radius:50%}.ring b{z-index:1;font-size:12px}.score div:last-child{display:flex;flex-direction:column;gap:4px;font-size:11px}.score small{color:#0d9f78}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}.metric{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 19px;box-shadow:0 2px 5px #2f385108}.metric-head{display:flex;justify-content:space-between;align-items:center}.metric-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--purple-soft);color:var(--purple);font-size:18px}.trend{font-size:9px;border-radius:12px;padding:4px 7px;color:var(--green);background:#eaf8f3}.metric p{color:#8f96a7;font-size:11px;margin:13px 0 4px}.metric h3{font-size:25px;margin:0 0 5px}.metric h3 small{font-size:10px;color:#9ca3b3;font-weight:500}.metric>small{color:#9ba2b2}.bar{height:4px;border-radius:3px;background:#eef0f4;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;background:var(--orange)}
+    .workspace{display:grid;grid-template-columns:minmax(530px,1.62fr) minmax(280px,.82fr);gap:20px;align-items:start}.panel,.side-card{background:#fff;border:1px solid var(--line);border-radius:15px}.panel{overflow:hidden;min-height:640px}.panel-head{display:flex;justify-content:space-between;align-items:center;padding:21px 22px 15px}.panel-head h2,.side-head h2{font-size:15px;margin:0}.panel-head div{display:flex;align-items:baseline;gap:9px}.panel-head small{color:#9ca2b0}.filters{display:flex;gap:5px;padding:0 22px 13px;border-bottom:1px solid var(--line)}.filters button{border:0;background:transparent;color:#7d8598;border-radius:7px;padding:7px 11px;font-size:11px}.filters button.active{background:var(--purple-soft);color:var(--purple);font-weight:700}.task-list{padding:7px 13px}.task{position:relative;display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid #eceef3;border-radius:11px;padding:14px 11px 13px 8px;margin:7px 0;transition:.18s}.task:hover{transform:translateY(-1px);border-color:#d8d4fb;box-shadow:0 6px 17px #32314e0d}.task:before{content:"";position:absolute;left:-1px;top:13px;width:3px;height:31px;border-radius:0 4px 4px 0;background:#e6a04c}.task.high:before{background:#ed6168}.task.low:before{background:#d9dce4}.drag{color:#c4c8d2;cursor:grab;user-select:none;font-size:18px}.check{flex:0 0 auto;width:19px;height:19px;border:1.5px solid #cbd0dc;border-radius:6px;background:#fff;color:#fff;padding:0}.task.done{opacity:.58}.task.done .check{background:var(--purple);border-color:var(--purple)}.task.done h3{text-decoration:line-through}.task-main{min-width:0;flex:1}.task-title{display:flex;align-items:center;gap:8px}.task-title h3{font-size:12px;margin:1px 0;line-height:1.45}.pill{font-size:8px;border-radius:5px;padding:3px 6px;white-space:nowrap}.task-main p{font-size:9px;color:#9198a8;margin:6px 0 8px;line-height:1.5}.meta{display:flex;align-items:center;gap:14px;color:#9aa1b0;font-size:8.5px}.urgent{color:#dd5f63}.more{border:0;background:none;color:#aeb3be}.empty{text-align:center;padding:70px 20px;color:#9aa1b0}.add-line{margin:6px 22px 15px;width:calc(100% - 44px);height:38px;border:1px dashed #d6d9e3;border-radius:9px;background:#fafafe;color:#747d92}.tip{text-align:center;color:#b1b5c0;font-size:8px}
+    .rail{display:grid;gap:15px}.side-card{padding:18px}.side-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.side-head button,.side-head span{border:0;background:none;color:var(--purple);font-size:9px}.focus{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:11px 0;border-top:1px solid #f0f1f4}.focus:first-of-type{border:0}.num{color:#c7cad2;font-weight:800;font-size:11px}.focus>div:last-child{display:grid;grid-template-columns:1fr auto;gap:7px}.focus strong{font-size:10px}.focus small{color:#9ba1af;font-size:8px}.progress{grid-column:1/3;height:4px;background:#eeeef4;border-radius:4px;overflow:hidden}.progress i{display:block;height:100%;background:var(--purple)}.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;border-top:1px solid #f0f1f4;border-bottom:1px solid #f0f1f4;padding:12px 0}.day{height:46px;border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;font-size:9px}.day span{color:#9ba1b0}.day.today{background:var(--purple);color:#fff}.day.today span{color:#dddafe}.event{display:flex;gap:10px;padding:10px 3px 4px;font-size:9px}.dot{width:7px;height:7px;border-radius:50%;background:var(--purple);margin-top:3px}.event div{display:flex;flex-direction:column;gap:3px}.event small{color:#9ca2b1}.insight{display:grid;grid-template-columns:30px 1fr auto;gap:10px;background:linear-gradient(135deg,#f0eeff,#f8f7ff);border-color:#dedafb}.spark{width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:#fff;color:var(--purple)}.insight strong{font-size:10px}.insight p{font-size:8.5px;line-height:1.6;color:#777e91;margin:4px 0}.insight button{border:0;background:var(--purple);color:#fff;border-radius:7px;font-size:8px;padding:6px 9px;margin-top:3px;height:28px}
+    .modal-bg{display:none;position:fixed;inset:0;z-index:30;background:#15172878;backdrop-filter:blur(3px);place-items:center;padding:20px}.modal-bg.open{display:grid}.modal{width:min(520px,100%);background:#fff;border-radius:17px;padding:23px;box-shadow:0 30px 80px #1113263d}.modal-head{display:flex;justify-content:space-between;align-items:start;margin-bottom:20px}.modal-head p{color:var(--purple);text-transform:uppercase;letter-spacing:.12em;font-weight:800;font-size:9px;margin:0 0 4px}.modal-head h2{margin:0;font-size:20px}.close{border:0;background:#f2f3f6;border-radius:8px;width:30px;height:30px;font-size:18px}.modal label{display:flex;flex-direction:column;gap:7px;font-size:11px;font-weight:700;margin-bottom:14px}.modal input,.modal select,.modal textarea{width:100%;border:1px solid #e1e4eb;border-radius:9px;padding:10px 12px;outline:none;color:#40485b;background:#fff;font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.modal-actions{display:flex;justify-content:flex-end;gap:9px}.cancel{border:0;background:#f2f3f6;color:#6e768a;border-radius:9px;padding:10px 16px}.toast{display:none;position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:40;background:#25283a;color:#fff;padding:11px 17px;border-radius:10px;font-size:11px;box-shadow:0 10px 30px #15172835}.toast.show{display:block}
+    @media(max-width:1060px){.sidebar{width:195px}.content{width:calc(100% - 195px);margin-left:195px}main{padding:28px 24px}.workspace{grid-template-columns:1fr}.rail{grid-template-columns:1fr 1fr}.insight{grid-column:1/3}.metrics{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:720px){.sidebar{display:none}.content{width:100%;margin:0}.topbar{padding:0 16px}.mobile{display:block}.crumb,.search{display:none}main{padding:22px 15px}.score{display:none}.welcome h1{font-size:23px}.metrics{display:flex;overflow:auto;margin-right:-15px;padding-right:15px}.metric{min-width:190px}.rail{grid-template-columns:1fr}.insight{grid-column:auto}.task-main p{display:none}.task-title{align-items:flex-start;flex-direction:column;gap:4px}.meta{flex-wrap:wrap}.filters{overflow:auto;padding-left:15px}.grid{grid-template-columns:1fr;gap:0}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="mark">✓</span>聚焦</div>
+      <nav>
+        <a class="nav active" href="#"><span>▦</span>今日待办<span class="badge" id="navCount">6</span></a>
+        <a class="nav" href="#overview"><span>◉</span>工作总览</a>
+        <p class="label">待办分类</p>
+        <button class="nav-btn filter-link" data-filter="opportunity"><span style="color:#6257e7">◎</span>商机待办<span id="nav-opportunity">0</span></button>
+        <button class="nav-btn filter-link" data-filter="delivery"><span style="color:#0d9f78">◫</span>交付待办<span id="nav-delivery">0</span></button>
+        <button class="nav-btn filter-link" data-filter="performance"><span style="color:#e58a26">↗</span>绩效待办<span id="nav-performance">0</span></button>
+        <button class="nav-btn filter-link" data-filter="other"><span style="color:#68738d">◇</span>其他待办<span id="nav-other">0</span></button>
+      </nav>
+      <div class="user"><div class="avatar">陈</div><div><strong>陈小满</strong><small>华东区 · CSM</small></div></div>
+    </aside>
+    <section class="content">
+      <header class="topbar">
+        <button class="mobile">☰</button>
+        <div class="crumb"><span>工作台</span><b>/</b><strong>今日待办</strong></div>
+        <div class="actions"><label class="search">⌕<input id="search" placeholder="搜索待办或客户…"></label><button class="primary open-modal">＋ 新建待办</button></div>
+      </header>
+      <main>
+        <section class="welcome">
+          <div><p class="eyebrow">今天 · 星期二</p><h1>早上好，小满 👋</h1><p>今天有 <strong id="todayCount">6 项待办</strong>，其中 <em id="highCount">2 项需要优先处理</em>。稳住节奏，逐一推进。</p></div>
+          <div class="score"><div class="ring"><b>68%</b></div><div><strong>本月目标进度</strong><small>较时间进度领先 4%</small></div></div>
+        </section>
+        <section class="metrics" id="overview">
+          <article class="metric"><div class="metric-head"><span class="metric-icon">◎</span><span class="trend">↑ 2</span></div><p>待推进商机</p><h3>8 <small>个</small></h3><small>预计金额 ¥126,000</small></article>
+          <article class="metric"><div class="metric-head"><span class="metric-icon" style="color:#0d9f78;background:#e3f7f0">◫</span><span class="trend">3 家本周上线</span></div><p>交付中商家</p><h3>12 <small>家</small></h3><small>平均上线进度 74%</small></article>
+          <article class="metric"><div class="metric-head"><span class="metric-icon" style="color:#e58a26;background:#fff1df">↗</span><span class="trend" style="color:#d96349;background:#fff0e9">还差 6 次</span></div><p>有效拜访</p><h3>18 <small>/ 24 次</small></h3><div class="bar"><i style="width:75%"></i></div></article>
+          <article class="metric"><div class="metric-head"><span class="metric-icon" style="color:#3785dd;background:#e6f1ff">✓</span><span class="trend">本周 +12%</span></div><p>本周完成率</p><h3>86<small>%</small></h3><small>已完成 24 项待办</small></article>
+        </section>
+        <section class="workspace">
+          <div class="panel">
+            <div class="panel-head"><div><h2>今日待办</h2><small id="listCount">6 项待处理</small></div><small>≡ 智能排序</small></div>
+            <div class="filters">
+              <button class="active" data-filter="all">全部</button><button data-filter="opportunity">商机</button><button data-filter="delivery">交付</button><button data-filter="performance">绩效</button><button data-filter="other">其他</button>
+            </div>
+            <div class="task-list" id="taskList"></div>
+            <button class="add-line open-modal">＋ 添加一项待办</button>
+            <p class="tip">⠿ 按住待办卡片可拖拽调整顺序</p>
+          </div>
+          <aside class="rail">
+            <section class="side-card">
+              <div class="side-head"><h2>本周聚焦</h2><button>查看详情 →</button></div>
+              <div class="focus"><div class="num">01</div><div><strong>推进高意向商机签约</strong><small>已推进 3 / 5 个</small><div class="progress"><i style="width:60%"></i></div></div></div>
+              <div class="focus"><div class="num">02</div><div><strong>保障 3 家商户如期上线</strong><small>已上线 1 / 3 家</small><div class="progress"><i style="width:33%;background:#0d9f78"></i></div></div></div>
+              <div class="focus"><div class="num">03</div><div><strong>完成 6 次有效拜访</strong><small>已完成 3 / 6 次</small><div class="progress"><i style="width:50%;background:#e58a26"></i></div></div></div>
+            </section>
+            <section class="side-card">
+              <div class="side-head"><h2>本周节奏</h2><span>7月27日 — 8月2日</span></div>
+              <div class="week"><div class="day"><span>一</span><b>27</b></div><div class="day today"><span>二</span><b>28</b></div><div class="day"><span>三</span><b>29</b></div><div class="day"><span>四</span><b>30</b></div><div class="day"><span>五</span><b>31</b></div><div class="day"><span>六</span><b>1</b></div><div class="day"><span>日</span><b>2</b></div></div>
+              <div class="event"><span class="dot"></span><div><strong>周三 · 商机复盘会</strong><small>10:00 — 11:00</small></div></div>
+              <div class="event"><span class="dot" style="background:#0d9f78"></span><div><strong>周五 · 商家上线评审</strong><small>15:30 — 16:30</small></div></div>
+            </section>
+            <section class="side-card insight"><span class="spark">✦</span><div><strong>智能提示</strong><p>从昨日 4 段拜访录音中识别出 <b>3 项新待办</b>，已按承诺时间加入列表。</p></div><button>查看</button></section>
+          </aside>
+        </section>
+      </main>
+    </section>
+  </div>
+  <div class="modal-bg" id="modal">
+    <form class="modal" id="taskForm">
+      <div class="modal-head"><div><p>自定义待办</p><h2>新建一项待办</h2></div><button type="button" class="close">×</button></div>
+      <label>待办内容<input name="title" required placeholder="例如：回访商家确认使用情况"></label>
+      <div class="grid">
+        <label>分类<select name="category"><option value="opportunity">商机待办</option><option value="delivery">交付待办</option><option value="performance">绩效待办</option><option value="other" selected>其他待办</option></select></label>
+        <label>优先级<select name="priority"><option value="high">高优先级</option><option value="medium" selected>中优先级</option><option value="low">低优先级</option></select></label>
+      </div>
+      <label>提醒时间<input name="time" value="今日 17:00"></label>
+      <label>补充说明<textarea name="detail" rows="3" placeholder="添加客户背景、下一步动作或注意事项…"></textarea></label>
+      <div class="modal-actions"><button type="button" class="cancel">取消</button><button class="primary" type="submit">保存待办</button></div>
+    </form>
+  </div>
+  <div class="toast" id="toast">✓ 待办已保存</div>
+  <script>
+    const defaults=[
+      {id:1,title:"跟进「云间小馆」连锁拓店意向",category:"opportunity",priority:"high",time:"09:30",source:"昨日拜访录音",detail:"客户计划 Q3 新开 3 家门店，重点确认预算与决策人"},
+      {id:2,title:"提交「野岛咖啡」正式上线检查",category:"delivery",priority:"high",time:"11:00",source:"上线进度 · 92%",detail:"菜单配置、支付测试已完成，待确认门店员工培训"},
+      {id:3,title:"补充本月有效拜访过程量",category:"performance",priority:"medium",time:"今日",source:"绩效看板",detail:"本月还差 6 次有效拜访，建议本周完成 3 次"},
+      {id:4,title:"确认「桃里烘焙」报价反馈",category:"opportunity",priority:"medium",time:"14:00",source:"7月24日拜访录音",detail:"客户关注年付折扣与增值服务包"},
+      {id:5,title:"协助「山海面馆」配置会员规则",category:"delivery",priority:"medium",time:"16:00",source:"上线进度 · 68%",detail:"基础资料已齐，今天完成会员等级和积分规则"},
+      {id:6,title:"整理本周优秀案例并同步群内",category:"other",priority:"low",time:"17:30",source:"手动创建",detail:"重点总结连锁客户方案推进经验"},
+      {id:7,title:"回访「拾光茶社」首周使用情况",category:"delivery",priority:"low",time:"明天",source:"上线进度 · 已上线",detail:"收集店长使用反馈与问题清单"}
+    ];
+    const cats={opportunity:["商机","#6257e7","◎"],delivery:["交付","#0d9f78","◫"],performance:["绩效","#e58a26","↗"],other:["其他","#68738d","◇"]};
+    let tasks=JSON.parse(localStorage.getItem("csm-focus-pages")||"null")||defaults,filter="all",query="",dragId=null;
+    const list=document.querySelector("#taskList"),modal=document.querySelector("#modal"),form=document.querySelector("#taskForm"),toast=document.querySelector("#toast");
+    const save=()=>localStorage.setItem("csm-focus-pages",JSON.stringify(tasks));
+    function render(){
+      const open=tasks.filter(t=>!t.done),visible=tasks.filter(t=>!t.done&&(filter==="all"||t.category===filter)&&t.title.includes(query));
+      document.querySelector("#navCount").textContent=open.length;document.querySelector("#todayCount").textContent=open.length+" 项待办";document.querySelector("#highCount").textContent=open.filter(t=>t.priority==="high").length+" 项需要优先处理";document.querySelector("#listCount").textContent=visible.length+" 项待处理";
+      Object.keys(cats).forEach(c=>document.querySelector("#nav-"+c).textContent=open.filter(t=>t.category===c).length);
+      list.innerHTML=visible.length?visible.map(t=>`<article class="task ${t.priority}" draggable="true" data-id="${t.id}"><span class="drag">⠿</span><button class="check" data-check="${t.id}"></button><div class="task-main"><div class="task-title"><h3>${escapeHtml(t.title)}</h3><span class="pill" style="color:${cats[t.category][1]};background:${cats[t.category][1]}12">${cats[t.category][2]} ${cats[t.category][0]}</span></div><p>${escapeHtml(t.detail||"")}</p><div class="meta"><span class="${t.time.includes(":")?"urgent":""}">◷ ${escapeHtml(t.time)}</span><span>◉ ${escapeHtml(t.source)}</span></div></div><button class="more" data-delete="${t.id}" title="删除">×</button></article>`).join(""):`<div class="empty"><h3>这一栏已经清空</h3><p>做得漂亮，去看看其他分类吧。</p></div>`;
+      document.querySelectorAll(".task").forEach(el=>{el.addEventListener("dragstart",()=>dragId=Number(el.dataset.id));el.addEventListener("dragover",e=>e.preventDefault());el.addEventListener("drop",()=>{const from=tasks.findIndex(t=>t.id===dragId),to=tasks.findIndex(t=>t.id===Number(el.dataset.id));const [m]=tasks.splice(from,1);tasks.splice(to,0,m);save();render();notify("排序已更新")})});
+      document.querySelectorAll("[data-check]").forEach(b=>b.onclick=()=>{tasks=tasks.map(t=>t.id===Number(b.dataset.check)?{...t,done:true}:t);save();render();notify("已标记完成")});
+      document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{tasks=tasks.filter(t=>t.id!==Number(b.dataset.delete));save();render();notify("待办已删除")});
+    }
+    function escapeHtml(v){return String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+    function notify(text){toast.textContent="✓ "+text;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1600)}
+    document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll(".filters button").forEach(x=>x.classList.toggle("active",x.dataset.filter===filter));render()});
+    document.querySelector("#search").oninput=e=>{query=e.target.value;render()};
+    document.querySelectorAll(".open-modal").forEach(b=>b.onclick=()=>modal.classList.add("open"));document.querySelector(".close").onclick=document.querySelector(".cancel").onclick=()=>modal.classList.remove("open");modal.onclick=e=>{if(e.target===modal)modal.classList.remove("open")};
+    form.onsubmit=e=>{e.preventDefault();const d=new FormData(form);tasks.unshift({id:Date.now(),title:d.get("title"),category:d.get("category"),priority:d.get("priority"),time:d.get("time"),detail:d.get("detail"),source:"手动创建"});save();render();modal.classList.remove("open");form.reset();notify("待办已添加")};
+    render();
+  </script>
+</body>
+</html>
